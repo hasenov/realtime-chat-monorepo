@@ -12,3 +12,4 @@ export const LoginSchema = RegisterSchema.pick({
 });
 
 export type RegisterInput = z.infer<typeof RegisterSchema>;
+export type LoginInput = z.infer<typeof LoginSchema>;
