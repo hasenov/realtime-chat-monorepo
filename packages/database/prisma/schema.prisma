@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -13,10 +7,66 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
-  name      String?
+  username  String   @unique
   password  String
+  role      Role     @default(USER)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tokens    Token[]
+  messages  Message[]
+  conversations ConversationParticipant[]
+}
+
+model Token {
+  id           String   @id @default(uuid())
+  refreshToken String   @unique
+  ip           String?
+  userAgent    String?
+  isValid      Boolean  @default(true)
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Conversation {
+  id        String   @id @default(uuid())
+  name      String?
+  isGroup   Boolean  @default(false)
+  messages  Message[]
+  participants ConversationParticipant[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ConversationParticipant {
+  userId         String
+  conversationId String
+  user           User         @relation(fields: [userId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  joinedAt       DateTime     @default(now())
+
+  @@id([userId, conversationId])
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  content        String
+  senderId       String
+  conversationId String
+  sender         User         @relation(fields: [senderId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  createdAt      DateTime     @default(now())
 }

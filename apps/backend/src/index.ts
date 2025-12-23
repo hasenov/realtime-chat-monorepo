@@ -4,6 +4,8 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import { prisma } from '@realtime-chat/database';
 
+import authRoutes from './routes/auth.routes';
+
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -14,6 +16,7 @@ const io = new Server(httpServer, {
 
 app.use(cors());
 app.use(express.json());
+app.use('/api/auth', authRoutes);
 
 app.get('/', async (req, res) => {
     const users = await prisma.user.findMany();
