@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { ZodError } from 'zod';
 import { AppError } from '../lib/exceptions/AppError';
 
-export const errorHandler = (
+export const errorMiddleware = (
     err: Error,
     req: Request,
     res: Response,

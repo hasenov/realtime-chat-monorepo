@@ -6,7 +6,7 @@ import { prisma } from '@realtime-chat/database';
 import cookieParser from 'cookie-parser';
 
 import authRoutes from './routes/auth.routes';
-import { errorHandler } from './middlewares/error.middleware';
+import { errorMiddleware } from './middlewares/error.middleware';
 
 const app = express();
 const httpServer = createServer(app);
@@ -26,7 +26,7 @@ app.get('/', async (req, res) => {
     res.json({ message: 'Server is running', users });
 });
 
-app.use(errorHandler);
+app.use(errorMiddleware);
 
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
