@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { prisma } from '@realtime-chat/database';
+import { UserJwtPayload } from '../types/jwt.types';
 
 class TokenService {
     // Generate access and refresh token pair
@@ -47,15 +48,61 @@ class TokenService {
         });
     }
 
-    validateAccessToken(token: string) {
+    validateAccessToken(token: string): UserJwtPayload | null {
         try {
-            return jwt.verify(token, process.env.JWT_ACCESS_SECRET!);
+            return jwt.verify(
+                token,
+                process.env.JWT_ACCESS_SECRET!
+            ) as UserJwtPayload;
         } catch (e) {
             return null;
         }
     }
 
-    // ... validateRefreshToken, removeToken, findToken
+    validateRefreshToken(token: string): UserJwtPayload | null {
+        try {
+            return jwt.verify(
+                token,
+                process.env.JWT_REFRESH_SECRET!
+            ) as UserJwtPayload;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    async findToken(refreshToken: string) {
+        return prisma.token.findUnique({
+            where: { refreshToken },
+        });
+    }
+
+    async updateToken(
+        id: string,
+        refreshToken: string,
+        userAgent: string,
+        ip: string
+    ) {
+        return prisma.token.update({
+            where: { id },
+            data: {
+                refreshToken,
+                userAgent,
+                ip,
+            },
+        });
+    }
+
+    async removeToken(refreshToken: string): Promise<{ count: number }> {
+        return prisma.token.deleteMany({
+            where: { refreshToken },
+        });
+    }
+
+    async removeAllUserTokens(userId: string): Promise<{ count: number }> {
+        return prisma.token.deleteMany({
+            where: { userId },
+        });
+    }
 }
 
 export default new TokenService();

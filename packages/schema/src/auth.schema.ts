@@ -6,9 +6,9 @@ export const RegisterSchema = z.object({
     password: z.string().min(6),
 });
 
-export const LoginSchema = RegisterSchema.pick({
-    email: true,
-    password: true,
+export const LoginSchema = z.object({
+    login: z.string().min(1, { error: 'Enter email or username' }),
+    password: z.string().min(1),
 });
 
 export type RegisterInput = z.infer<typeof RegisterSchema>;
