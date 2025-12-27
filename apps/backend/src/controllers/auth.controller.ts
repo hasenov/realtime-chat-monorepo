@@ -60,7 +60,7 @@ export class AuthController {
         const refreshToken = req.cookies.refreshToken;
 
         if (!refreshToken) {
-            throw new AppError('Unauthorized');
+            throw new AppError('Unauthorized', StatusCodes.UNAUTHORIZED);
         }
 
         const newTokens = await authService.refresh(
@@ -99,7 +99,11 @@ export class AuthController {
     };
 
     getMe = async (req: Request, res: Response) => {
-        const user = await authService.getMe(req.user?.id);
+        if (!req.user) {
+            throw new AppError('Unauthorized', StatusCodes.UNAUTHORIZED);
+        }
+
+        const user = await authService.getMe(req.user.id);
 
         res.status(StatusCodes.OK).json({
             status: 'success',

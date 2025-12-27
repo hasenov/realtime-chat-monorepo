@@ -14,7 +14,7 @@ export class AuthService {
         });
 
         if (existingUser) {
-            throw new AppError('User already exists');
+            throw new AppError('User already exists', StatusCodes.CONFLICT);
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -59,12 +59,18 @@ export class AuthService {
         });
 
         if (!user) {
-            throw new AppError('Invalid login or password');
+            throw new AppError(
+                'Invalid login or password',
+                StatusCodes.UNAUTHORIZED
+            );
         }
 
         const isValid = await bcrypt.compare(data.password, user.password);
         if (!isValid) {
-            throw new AppError('Invalid login or password');
+            throw new AppError(
+                'Invalid login or password',
+                StatusCodes.UNAUTHORIZED
+            );
         }
 
         const tokens = tokenService.generateTokens({
@@ -92,12 +98,13 @@ export class AuthService {
         if (!tokenFromDb && userData) {
             await tokenService.removeAllUserTokens(userData.id);
             throw new AppError(
-                'Refresh token reused. Security alert! Please login again.'
+                'Refresh token reused. Security alert! Please login again.',
+                StatusCodes.FORBIDDEN
             );
         }
 
         if (!tokenFromDb || !userData) {
-            throw new AppError('Unauthorized');
+            throw new AppError('Unauthorized', StatusCodes.UNAUTHORIZED);
         }
 
         const newTokens = tokenService.generateTokens({
@@ -121,9 +128,7 @@ export class AuthService {
         return tokenService.removeToken(refreshToken);
     }
 
-    async getMe(userId?: string) {
-        if (!userId) return;
-
+    async getMe(userId: string) {
         const user = await prisma.user.findUnique({
             where: {
                 id: userId,
