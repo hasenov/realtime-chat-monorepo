@@ -2,6 +2,8 @@ import { prisma } from '@realtime-chat/database';
 import { LoginInput, RegisterInput } from '@realtime-chat/schema';
 import bcrypt from 'bcryptjs';
 import tokenService from './token.service';
+import { AppError } from '../lib/exceptions/AppError';
+import { StatusCodes } from 'http-status-codes';
 
 export class AuthService {
     async register(data: RegisterInput, userAgent: string, ip: string) {
@@ -12,7 +14,7 @@ export class AuthService {
         });
 
         if (existingUser) {
-            throw new Error('User already exists');
+            throw new AppError('User already exists', StatusCodes.CONFLICT);
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -57,12 +59,18 @@ export class AuthService {
         });
 
         if (!user) {
-            throw new Error('Invalid login or password');
+            throw new AppError(
+                'Invalid login or password',
+                StatusCodes.UNAUTHORIZED
+            );
         }
 
         const isValid = await bcrypt.compare(data.password, user.password);
         if (!isValid) {
-            throw new Error('Invalid login or password');
+            throw new AppError(
+                'Invalid login or password',
+                StatusCodes.UNAUTHORIZED
+            );
         }
 
         const tokens = tokenService.generateTokens({
@@ -89,13 +97,14 @@ export class AuthService {
 
         if (!tokenFromDb && userData) {
             await tokenService.removeAllUserTokens(userData.id);
-            throw new Error(
-                'Refresh token reused. Security alert! Please login again.'
+            throw new AppError(
+                'Refresh token reused. Security alert! Please login again.',
+                StatusCodes.FORBIDDEN
             );
         }
 
         if (!tokenFromDb || !userData) {
-            throw new Error('Unauthorized');
+            throw new AppError('Unauthorized', StatusCodes.UNAUTHORIZED);
         }
 
         const newTokens = tokenService.generateTokens({
@@ -115,7 +124,29 @@ export class AuthService {
     }
 
     async logout(refreshToken: string) {
+        if (!refreshToken) return;
         return tokenService.removeToken(refreshToken);
+    }
+
+    async getMe(userId: string) {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+            select: {
+                id: true,
+                email: true,
+                username: true,
+                role: true,
+                createdAt: true,
+            },
+        });
+
+        if (!user) {
+            throw new AppError('User not found', StatusCodes.NOT_FOUND);
+        }
+
+        return user;
     }
 }
 
