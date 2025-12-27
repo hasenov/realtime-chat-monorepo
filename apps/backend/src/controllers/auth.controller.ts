@@ -86,9 +86,7 @@ export class AuthController {
     logout = async (req: Request, res: Response) => {
         const refreshToken = req.cookies.refreshToken;
 
-        if (refreshToken) {
-            await authService.logout(refreshToken);
-        }
+        await authService.logout(refreshToken);
 
         const { maxAge, ...clearOptions } = REFRESH_COOKIE_OPTIONS;
 

@@ -116,6 +116,7 @@ export class AuthService {
     }
 
     async logout(refreshToken: string) {
+        if (!refreshToken) return;
         return tokenService.removeToken(refreshToken);
     }
 }
