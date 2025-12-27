@@ -2,6 +2,7 @@ import { prisma } from '@realtime-chat/database';
 import { LoginInput, RegisterInput } from '@realtime-chat/schema';
 import bcrypt from 'bcryptjs';
 import tokenService from './token.service';
+import { AppError } from '../lib/exceptions/AppError';
 
 export class AuthService {
     async register(data: RegisterInput, userAgent: string, ip: string) {
@@ -12,7 +13,7 @@ export class AuthService {
         });
 
         if (existingUser) {
-            throw new Error('User already exists');
+            throw new AppError('User already exists');
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -57,12 +58,12 @@ export class AuthService {
         });
 
         if (!user) {
-            throw new Error('Invalid login or password');
+            throw new AppError('Invalid login or password');
         }
 
         const isValid = await bcrypt.compare(data.password, user.password);
         if (!isValid) {
-            throw new Error('Invalid login or password');
+            throw new AppError('Invalid login or password');
         }
 
         const tokens = tokenService.generateTokens({
@@ -89,13 +90,13 @@ export class AuthService {
 
         if (!tokenFromDb && userData) {
             await tokenService.removeAllUserTokens(userData.id);
-            throw new Error(
+            throw new AppError(
                 'Refresh token reused. Security alert! Please login again.'
             );
         }
 
         if (!tokenFromDb || !userData) {
-            throw new Error('Unauthorized');
+            throw new AppError('Unauthorized');
         }
 
         const newTokens = tokenService.generateTokens({
