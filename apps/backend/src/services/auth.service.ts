@@ -3,6 +3,7 @@ import { LoginInput, RegisterInput } from '@realtime-chat/schema';
 import bcrypt from 'bcryptjs';
 import tokenService from './token.service';
 import { AppError } from '../lib/exceptions/AppError';
+import { StatusCodes } from 'http-status-codes';
 
 export class AuthService {
     async register(data: RegisterInput, userAgent: string, ip: string) {
@@ -118,6 +119,29 @@ export class AuthService {
     async logout(refreshToken: string) {
         if (!refreshToken) return;
         return tokenService.removeToken(refreshToken);
+    }
+
+    async getMe(userId?: string) {
+        if (!userId) return;
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+            select: {
+                id: true,
+                email: true,
+                username: true,
+                role: true,
+                createdAt: true,
+            },
+        });
+
+        if (!user) {
+            throw new AppError('User not found', StatusCodes.NOT_FOUND);
+        }
+
+        return user;
     }
 }
 

@@ -97,6 +97,17 @@ export class AuthController {
             message: 'Logged out successfully',
         });
     };
+
+    getMe = async (req: Request, res: Response) => {
+        const user = await authService.getMe(req.user?.id);
+
+        res.status(StatusCodes.OK).json({
+            status: 'success',
+            data: {
+                user,
+            },
+        });
+    };
 }
 
 export const authController = new AuthController();
