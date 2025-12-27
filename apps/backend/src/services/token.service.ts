@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { prisma } from '@realtime-chat/database';
-import { UserJwtPayload } from '../types/jwt.types';
+import { TokenPayload } from '../types/auth.types';
 
 class TokenService {
     // Generate access and refresh token pair
@@ -48,23 +48,23 @@ class TokenService {
         });
     }
 
-    validateAccessToken(token: string): UserJwtPayload | null {
+    validateAccessToken(token: string): TokenPayload | null {
         try {
             return jwt.verify(
                 token,
                 process.env.JWT_ACCESS_SECRET!
-            ) as UserJwtPayload;
+            ) as TokenPayload;
         } catch (e) {
             return null;
         }
     }
 
-    validateRefreshToken(token: string): UserJwtPayload | null {
+    validateRefreshToken(token: string): TokenPayload | null {
         try {
             return jwt.verify(
                 token,
                 process.env.JWT_REFRESH_SECRET!
-            ) as UserJwtPayload;
+            ) as TokenPayload;
         } catch (e) {
             return null;
         }
