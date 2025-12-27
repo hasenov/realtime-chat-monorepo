@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { prisma } from '@realtime-chat/database';
-import { TokenPayload } from '../types/auth.types';
+import { DecodedToken, UserPayload } from '../types/auth.types';
 
 class TokenService {
     // Generate access and refresh token pair
-    generateTokens(payload: any) {
+    generateTokens(payload: UserPayload) {
         const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, {
             expiresIn: '15m',
         });
@@ -48,23 +48,23 @@ class TokenService {
         });
     }
 
-    validateAccessToken(token: string): TokenPayload | null {
+    validateAccessToken(token: string): DecodedToken | null {
         try {
             return jwt.verify(
                 token,
                 process.env.JWT_ACCESS_SECRET!
-            ) as TokenPayload;
+            ) as DecodedToken;
         } catch (e) {
             return null;
         }
     }
 
-    validateRefreshToken(token: string): TokenPayload | null {
+    validateRefreshToken(token: string): DecodedToken | null {
         try {
             return jwt.verify(
                 token,
                 process.env.JWT_REFRESH_SECRET!
-            ) as TokenPayload;
+            ) as DecodedToken;
         } catch (e) {
             return null;
         }
