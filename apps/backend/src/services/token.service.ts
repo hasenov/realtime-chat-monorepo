@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { prisma } from '@realtime-chat/database';
+import { Prisma, prisma } from '@realtime-chat/database';
 import { DecodedToken, UserPayload } from '../types/auth.types';
 
 class TokenService {
@@ -21,23 +21,25 @@ class TokenService {
         userId: string,
         refreshToken: string,
         userAgent: string,
-        ip: string
+        ip: string,
+        tx?: Prisma.TransactionClient
     ) {
-        const tokenData = await prisma.token.findFirst({
+        const db = tx || prisma;
+        const tokenData = await db.token.findFirst({
             where: { userId, userAgent },
         });
 
         // If a session already exists for this device/user-agent, update the token
         if (tokenData) {
             tokenData.refreshToken = refreshToken;
-            return prisma.token.update({
+            return db.token.update({
                 where: { id: tokenData.id },
                 data: { refreshToken },
             });
         }
 
         // Otherwise, create a new session record
-        return prisma.token.create({
+        return db.token.create({
             data: {
                 userId,
                 refreshToken,
@@ -45,6 +47,42 @@ class TokenService {
                 ip,
                 expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             },
+        });
+    }
+
+    async updateToken(
+        id: string,
+        refreshToken: string,
+        userAgent: string,
+        ip: string,
+        tx?: Prisma.TransactionClient
+    ) {
+        const db = tx || prisma;
+        return db.token.update({
+            where: { id },
+            data: {
+                refreshToken,
+                userAgent,
+                ip,
+            },
+        });
+    }
+
+    async findToken(refreshToken: string) {
+        return prisma.token.findUnique({
+            where: { refreshToken },
+        });
+    }
+
+    async removeToken(refreshToken: string): Promise<{ count: number }> {
+        return prisma.token.deleteMany({
+            where: { refreshToken },
+        });
+    }
+
+    async removeAllUserTokens(userId: string): Promise<{ count: number }> {
+        return prisma.token.deleteMany({
+            where: { userId },
         });
     }
 
@@ -68,40 +106,6 @@ class TokenService {
         } catch (e) {
             return null;
         }
-    }
-
-    async findToken(refreshToken: string) {
-        return prisma.token.findUnique({
-            where: { refreshToken },
-        });
-    }
-
-    async updateToken(
-        id: string,
-        refreshToken: string,
-        userAgent: string,
-        ip: string
-    ) {
-        return prisma.token.update({
-            where: { id },
-            data: {
-                refreshToken,
-                userAgent,
-                ip,
-            },
-        });
-    }
-
-    async removeToken(refreshToken: string): Promise<{ count: number }> {
-        return prisma.token.deleteMany({
-            where: { refreshToken },
-        });
-    }
-
-    async removeAllUserTokens(userId: string): Promise<{ count: number }> {
-        return prisma.token.deleteMany({
-            where: { userId },
-        });
     }
 }
 
