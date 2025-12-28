@@ -31,7 +31,6 @@ class TokenService {
 
         // If a session already exists for this device/user-agent, update the token
         if (tokenData) {
-            tokenData.refreshToken = refreshToken;
             return db.token.update({
                 where: { id: tokenData.id },
                 data: { refreshToken },
