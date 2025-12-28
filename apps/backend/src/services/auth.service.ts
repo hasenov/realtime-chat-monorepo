@@ -20,35 +20,40 @@ export class AuthService {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(data.password, salt);
 
-        const user = await prisma.user.create({
-            data: {
-                email: data.email,
-                username: data.username,
-                password: hashedPassword,
-            },
-            select: {
-                id: true,
-                email: true,
-                username: true,
-                role: true,
-                createdAt: true,
-            },
+        const result = await prisma.$transaction(async (tx) => {
+            const user = await tx.user.create({
+                data: {
+                    email: data.email,
+                    username: data.username,
+                    password: hashedPassword,
+                },
+                select: {
+                    id: true,
+                    email: true,
+                    username: true,
+                    role: true,
+                    createdAt: true,
+                },
+            });
+
+            const tokens = tokenService.generateTokens({
+                id: user.id,
+                email: user.email,
+                role: user.role,
+            });
+
+            await tokenService.saveToken(
+                user.id,
+                tokens.refreshToken,
+                userAgent || '',
+                ip || '',
+                tx
+            );
+
+            return { tokens, user };
         });
 
-        const tokens = tokenService.generateTokens({
-            id: user.id,
-            email: user.email,
-            role: user.role,
-        });
-
-        await tokenService.saveToken(
-            user.id,
-            tokens.refreshToken,
-            userAgent || '',
-            ip || ''
-        );
-
-        return { tokens, user };
+        return result;
     }
 
     async login(data: LoginInput, userAgent: string, ip: string) {
@@ -73,22 +78,25 @@ export class AuthService {
             );
         }
 
-        const tokens = tokenService.generateTokens({
-            id: user.id,
-            email: user.email,
-            role: user.role,
+        return prisma.$transaction(async (tx) => {
+            const tokens = tokenService.generateTokens({
+                id: user.id,
+                email: user.email,
+                role: user.role,
+            });
+
+            await tokenService.saveToken(
+                user.id,
+                tokens.refreshToken,
+                userAgent || '',
+                ip || '',
+                tx
+            );
+
+            const { password, ...userWithoutSensitiveData } = user;
+
+            return { tokens, user: userWithoutSensitiveData };
         });
-
-        await tokenService.saveToken(
-            user.id,
-            tokens.refreshToken,
-            userAgent || '',
-            ip || ''
-        );
-
-        const { password, ...userWithoutSensitiveData } = user;
-
-        return { tokens, user: userWithoutSensitiveData };
     }
 
     async refresh(refreshToken: string, userAgent: string, ip: string) {
@@ -107,20 +115,22 @@ export class AuthService {
             throw new AppError('Unauthorized', StatusCodes.UNAUTHORIZED);
         }
 
-        const newTokens = tokenService.generateTokens({
-            id: userData.id,
-            email: userData.email,
-            role: userData.role,
+        return prisma.$transaction(async (tx) => {
+            const newTokens = tokenService.generateTokens({
+                id: userData.id,
+                email: userData.email,
+                role: userData.role,
+            });
+
+            await tokenService.updateToken(
+                tokenFromDb.id,
+                newTokens.refreshToken,
+                userAgent || '',
+                ip || '',
+                tx
+            );
+            return newTokens;
         });
-
-        await tokenService.updateToken(
-            tokenFromDb.id,
-            newTokens.refreshToken,
-            userAgent || '',
-            ip || ''
-        );
-
-        return newTokens;
     }
 
     async logout(refreshToken: string) {
