@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
 import { Prisma, prisma } from '@realtime-chat/database';
+import jwt from 'jsonwebtoken';
 import { DecodedToken, UserPayload } from '../types/auth.types';
 
 class TokenService {

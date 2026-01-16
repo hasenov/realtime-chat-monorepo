@@ -1,9 +1,9 @@
 import { prisma } from '@realtime-chat/database';
-import { LoginInput, RegisterInput } from '@realtime-chat/schema';
+import type { LoginInput, RegisterInput } from '@realtime-chat/schema';
 import bcrypt from 'bcryptjs';
-import tokenService from './token.service';
-import { AppError } from '../lib/exceptions/AppError';
 import { StatusCodes } from 'http-status-codes';
+import { AppError } from '../lib/exceptions/AppError';
+import tokenService from './token.service';
 
 export class AuthService {
     async register(data: RegisterInput, userAgent: string, ip: string) {
@@ -95,7 +95,7 @@ export class AuthService {
                 tx
             );
 
-            const { password, ...userWithoutSensitiveData } = user;
+            const { password, updatedAt, ...userWithoutSensitiveData } = user;
 
             return { tokens, user: userWithoutSensitiveData };
         });
@@ -151,6 +151,7 @@ export class AuthService {
                 username: true,
                 role: true,
                 createdAt: true,
+                name: true,
             },
         });
 

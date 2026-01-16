@@ -1,9 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
-import { authService } from '../services/auth.service';
-import { REFRESH_COOKIE_OPTIONS } from '../config/cookie.config';
 import { LoginSchema, RegisterSchema } from '@realtime-chat/schema';
+import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { REFRESH_COOKIE_OPTIONS } from '../config/cookie.config';
 import { AppError } from '../lib/exceptions/AppError';
+import { authService } from '../services/auth.service';
+
+export const sleep = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
 
 export class AuthController {
     register = async (req: Request, res: Response) => {

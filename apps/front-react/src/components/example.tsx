@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 
 function ExampleWrapper({ className, ...props }: React.ComponentProps<'div'>) {
     return (
@@ -50,4 +50,4 @@ function Example({
     );
 }
 
-export { ExampleWrapper, Example };
+export { Example, ExampleWrapper };

@@ -12,9 +12,9 @@ import {
     AlertDialogMedia,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+} from '@/shared/ui/alert-dialog';
+import { Badge } from '@/shared/ui/badge';
+import { Button } from '@/shared/ui/button';
 import {
     Card,
     CardAction,
@@ -23,7 +23,7 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from '@/components/ui/card';
+} from '@/shared/ui/card';
 import {
     Combobox,
     ComboboxContent,
@@ -31,7 +31,7 @@ import {
     ComboboxInput,
     ComboboxItem,
     ComboboxList,
-} from '@/components/ui/combobox';
+} from '@/shared/ui/combobox';
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -48,9 +48,9 @@ import {
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
+} from '@/shared/ui/dropdown-menu';
+import { Field, FieldGroup, FieldLabel } from '@/shared/ui/field';
+import { Input } from '@/shared/ui/input';
 import {
     Select,
     SelectContent,
@@ -58,37 +58,37 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+} from '@/shared/ui/select';
+import { Textarea } from '@/shared/ui/textarea';
 import {
-    PlusIcon,
+    BellIcon,
     BluetoothIcon,
-    MoreVerticalIcon,
-    FileIcon,
-    FolderIcon,
-    FolderOpenIcon,
-    FileCodeIcon,
-    MoreHorizontalIcon,
-    FolderSearchIcon,
-    SaveIcon,
+    CreditCardIcon,
     DownloadIcon,
     EyeIcon,
-    LayoutIcon,
-    PaletteIcon,
-    SunIcon,
-    MoonIcon,
-    MonitorIcon,
-    UserIcon,
-    CreditCardIcon,
-    SettingsIcon,
+    FileCodeIcon,
+    FileIcon,
+    FileTextIcon,
+    FolderIcon,
+    FolderOpenIcon,
+    FolderSearchIcon,
+    HelpCircleIcon,
     KeyboardIcon,
     LanguagesIcon,
-    BellIcon,
-    MailIcon,
-    ShieldIcon,
-    HelpCircleIcon,
-    FileTextIcon,
+    LayoutIcon,
     LogOutIcon,
+    MailIcon,
+    MonitorIcon,
+    MoonIcon,
+    MoreHorizontalIcon,
+    MoreVerticalIcon,
+    PaletteIcon,
+    PlusIcon,
+    SaveIcon,
+    SettingsIcon,
+    ShieldIcon,
+    SunIcon,
+    UserIcon,
 } from 'lucide-react';
 
 export function ComponentExample() {

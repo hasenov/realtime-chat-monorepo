@@ -1,7 +1,17 @@
-import { ComponentExample } from '@/components/component-example';
+import { Toaster } from '@/shared/ui/sonner';
+import { BrowserRouter } from 'react-router';
+import { AuthProvider } from './app/providers/auth-provider';
+import { AppRouter } from './app/providers/router-provider';
 
 export function App() {
-    return <ComponentExample />;
+    return (
+        <AuthProvider>
+            <BrowserRouter>
+                <AppRouter />
+                <Toaster />
+            </BrowserRouter>
+        </AuthProvider>
+    );
 }
 
 export default App;
