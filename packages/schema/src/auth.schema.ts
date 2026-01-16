@@ -4,6 +4,14 @@ export const RegisterSchema = z.object({
     email: z.email(),
     username: z.string().min(3),
     password: z.string().min(6),
+    name: z.string().optional(),
+});
+
+export const RegisterFormSchema = RegisterSchema.extend({
+    password2: z.string().min(1, 'Confirm password'),
+}).refine((data) => data.password === data.password2, {
+    error: 'Passwords do not match',
+    path: ['password2'],
 });
 
 export const LoginSchema = z.object({
@@ -12,4 +20,5 @@ export const LoginSchema = z.object({
 });
 
 export type RegisterInput = z.infer<typeof RegisterSchema>;
+export type RegisterFormInput = z.infer<typeof RegisterFormSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
