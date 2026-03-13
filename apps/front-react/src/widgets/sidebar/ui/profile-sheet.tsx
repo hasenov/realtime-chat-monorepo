@@ -1,4 +1,4 @@
-import { AvatarUploader } from '@/features/user/update-avatar';
+import { AvatarUploader } from '@/features/update-avatar';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';

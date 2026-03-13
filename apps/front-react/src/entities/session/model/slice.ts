@@ -1,4 +1,4 @@
-import { uploadAvatarApi } from '@/features/user/update-avatar/api/upload-avatar-api';
+import { uploadAvatarApi } from '@/features/update-avatar/api/upload-avatar-api';
 import type { User } from '@realtime-chat/schema';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { sessionApi } from '../api/session-api';
