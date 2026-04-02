@@ -141,30 +141,6 @@ export class AuthService {
         if (!refreshToken) return;
         return tokenService.removeToken(refreshToken);
     }
-
-    async getMe(userId: string) {
-        const user = await prisma.user.findUnique({
-            where: {
-                id: userId,
-            },
-            select: {
-                id: true,
-                email: true,
-                username: true,
-                role: true,
-                createdAt: true,
-                name: true,
-                avatar: true,
-                bio: true,
-            },
-        });
-
-        if (!user) {
-            throw new AppError('User not found', StatusCodes.NOT_FOUND);
-        }
-
-        return user;
-    }
 }
 
 export const authService = new AuthService();

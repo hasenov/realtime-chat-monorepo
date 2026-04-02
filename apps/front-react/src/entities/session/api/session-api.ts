@@ -9,7 +9,7 @@ import type {
 export const sessionApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getMe: build.query<User, void>({
-            query: () => '/auth/me',
+            query: () => '/me',
             providesTags: ['Session'],
             transformResponse: (
                 response: ApiDataResponse<UserResponseData>

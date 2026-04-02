@@ -97,21 +97,6 @@ export class AuthController {
             message: 'Logged out successfully',
         });
     };
-
-    getMe = async (req: Request, res: Response) => {
-        if (!req.user) {
-            throw new AppError('Unauthorized', StatusCodes.UNAUTHORIZED);
-        }
-
-        const user = await authService.getMe(req.user.id);
-
-        res.status(StatusCodes.OK).json({
-            status: 'success',
-            data: {
-                user,
-            },
-        });
-    };
 }
 
 export const authController = new AuthController();

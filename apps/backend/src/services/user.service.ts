@@ -1,8 +1,35 @@
 import { prisma } from '@realtime-chat/database';
+import { SearchInput } from '@realtime-chat/schema';
 import fs from 'fs';
+import { StatusCodes } from 'http-status-codes';
 import path from 'path';
+import { AppError } from '../lib/exceptions/AppError';
 
 class UserService {
+    async findById(userId: string) {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+            select: {
+                id: true,
+                email: true,
+                username: true,
+                role: true,
+                createdAt: true,
+                name: true,
+                avatar: true,
+                bio: true,
+            },
+        });
+
+        if (!user) {
+            throw new AppError('User not found', StatusCodes.NOT_FOUND);
+        }
+
+        return user;
+    }
+
     async uploadAvatar(userId: string, avatarUrl: string) {
         const currentUser = await prisma.user.findUnique({
             where: {
@@ -62,6 +89,28 @@ class UserService {
         }
 
         return updatedUser;
+    }
+
+    async searchUsers(query: SearchInput, currentUserId: string) {
+        if (!query.q) {
+            return [];
+        }
+
+        return await prisma.user.findMany({
+            where: {
+                id: { not: currentUserId },
+                username: {
+                    contains: query.q,
+                    mode: 'insensitive',
+                },
+            },
+            select: {
+                id: true,
+                username: true,
+                avatar: true,
+                name: true,
+            },
+        });
     }
 }
 

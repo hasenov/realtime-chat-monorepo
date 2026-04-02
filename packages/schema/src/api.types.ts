@@ -36,6 +36,10 @@ export type UserResponseData = {
     user: User;
 };
 
+export type UsersResponseData = {
+    users: User[];
+};
+
 export type RefreshTokenData = {
     accessToken: string;
 };

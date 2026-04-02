@@ -9,8 +9,10 @@ import {
 } from 'lucide-react';
 import * as React from 'react';
 
+import { SearchUsersDialogContent } from '@/features/search-users';
 import { useAppSelector } from '@/shared/lib/hooks';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
+import { Dialog } from '@/shared/ui/dialog';
 import { Sheet, SheetTrigger } from '@/shared/ui/sheet';
 import {
     Sidebar,
@@ -25,6 +27,7 @@ import {
     SidebarMenuItem,
 } from '@/shared/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
+import { DialogTrigger } from '@radix-ui/react-dialog';
 import { ProfileSheet } from './profile-sheet';
 import { SettingsSheet } from './settings-sheet';
 
@@ -196,9 +199,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             {activeTab === 'chats' ? 'Сообщения' : 'Контакты'}
                         </div>
                         <div className="flex items-center gap-2">
-                            <button className="text-muted-foreground hover:text-primary">
-                                <Plus className="size-5" />
-                            </button>
+                            <Dialog>
+                                <DialogTrigger className="text-muted-foreground hover:text-primary">
+                                    <Plus className="size-5" />
+                                </DialogTrigger>
+                                <SearchUsersDialogContent />
+                            </Dialog>
                         </div>
                     </div>
                     <div className="relative">

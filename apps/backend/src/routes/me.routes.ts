@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { uploadAvatarMiddleware } from '../config/multer.config';
 import { userController } from '../controllers/user.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 
@@ -6,6 +7,11 @@ const router: Router = Router();
 
 router.use(authMiddleware);
 
-router.get('/search', userController.searchUsers);
+router.get('/', userController.getMe);
+router.post(
+    '/avatar',
+    uploadAvatarMiddleware.single('avatar'),
+    userController.uploadAvatar
+);
 
 export default router;

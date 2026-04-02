@@ -1,3 +1,4 @@
+import { SearchSchema } from '@realtime-chat/schema';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { AppError } from '../lib/exceptions/AppError';
@@ -25,6 +26,43 @@ class UserController {
             message: 'Avatar uploaded successfully',
             data: {
                 user: updatedUser,
+            },
+        });
+    };
+
+    searchUsers = async (req: Request, res: Response) => {
+        if (!req.user) {
+            throw new AppError('Unauthorized', StatusCodes.UNAUTHORIZED);
+        }
+
+        const validatedQuery = SearchSchema.parse(req.query);
+
+        const currentUserId = req.user.id;
+
+        const users = await userService.searchUsers(
+            validatedQuery,
+            currentUserId
+        );
+
+        res.status(StatusCodes.OK).json({
+            status: 'success',
+            data: {
+                users,
+            },
+        });
+    };
+
+    getMe = async (req: Request, res: Response) => {
+        if (!req.user) {
+            throw new AppError('Unauthorized', StatusCodes.UNAUTHORIZED);
+        }
+
+        const user = await userService.findById(req.user.id);
+
+        res.status(StatusCodes.OK).json({
+            status: 'success',
+            data: {
+                user,
             },
         });
     };
