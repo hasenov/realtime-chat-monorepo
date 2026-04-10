@@ -3,6 +3,7 @@ import { SearchInput } from '@realtime-chat/schema';
 import fs from 'fs';
 import { StatusCodes } from 'http-status-codes';
 import path from 'path';
+import { publicUserSelect } from '../lib/db-selects/user.select';
 import { AppError } from '../lib/exceptions/AppError';
 
 class UserService {
@@ -11,16 +12,7 @@ class UserService {
             where: {
                 id: userId,
             },
-            select: {
-                id: true,
-                email: true,
-                username: true,
-                role: true,
-                createdAt: true,
-                name: true,
-                avatar: true,
-                bio: true,
-            },
+            select: publicUserSelect,
         });
 
         if (!user) {
@@ -49,16 +41,7 @@ class UserService {
             data: {
                 avatar: avatarUrl,
             },
-            select: {
-                id: true,
-                email: true,
-                username: true,
-                role: true,
-                createdAt: true,
-                name: true,
-                avatar: true,
-                bio: true,
-            },
+            select: publicUserSelect,
         });
 
         if (oldAvatarUrl) {

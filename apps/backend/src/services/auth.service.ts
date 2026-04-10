@@ -2,6 +2,7 @@ import { prisma } from '@realtime-chat/database';
 import type { LoginInput, RegisterInput } from '@realtime-chat/schema';
 import bcrypt from 'bcryptjs';
 import { StatusCodes } from 'http-status-codes';
+import { publicUserSelect } from '../lib/db-selects/user.select';
 import { AppError } from '../lib/exceptions/AppError';
 import tokenService from './token.service';
 
@@ -28,16 +29,7 @@ export class AuthService {
                     password: hashedPassword,
                     name: data.name,
                 },
-                select: {
-                    id: true,
-                    email: true,
-                    username: true,
-                    role: true,
-                    createdAt: true,
-                    name: true,
-                    avatar: true,
-                    bio: true,
-                },
+                select: publicUserSelect,
             });
 
             const tokens = tokenService.generateTokens({
