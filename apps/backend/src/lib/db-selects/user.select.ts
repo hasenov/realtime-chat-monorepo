@@ -8,3 +8,10 @@ export const publicUserSelect = {
     avatar: true,
     bio: true,
 } as const;
+
+export const conversationUserSelect = {
+    id: true,
+    username: true,
+    name: true,
+    avatar: true,
+} as const;

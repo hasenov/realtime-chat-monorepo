@@ -9,6 +9,7 @@ import path from 'path';
 import { CORS_OPTIONS } from './config/cors.config';
 import { errorMiddleware } from './middlewares/error.middleware';
 import authRoutes from './routes/auth.routes';
+import conversationRoutes from './routes/conversation.routes';
 import meRoutes from './routes/me.routes';
 import userRoutes from './routes/user.routes';
 
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/conversations', conversationRoutes);
 app.use('/api/me', meRoutes);
 
 app.get('/', async (req, res) => {
