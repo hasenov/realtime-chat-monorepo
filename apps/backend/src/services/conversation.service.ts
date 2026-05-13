@@ -34,9 +34,9 @@ export class ConversationService {
             },
         });
 
-        return conversations.map((conversation) => ({
+        return conversations.map(({ messages, ...conversation }) => ({
             ...conversation,
-            lastMessage: conversation.messages[0] ?? null,
+            lastMessage: messages[0] ?? null,
         }));
     }
 
