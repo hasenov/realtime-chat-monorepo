@@ -54,10 +54,10 @@ export class ConversationService {
                     },
                 },
                 messages: {
+                    take: 1,
                     orderBy: {
-                        createdAt: 'asc', // todo: potential problem, will return first 50 messages, not last 50. probably should be reversed to desc and then reverse back on frontend or use cursor pagination
+                        createdAt: 'desc',
                     },
-                    take: 50,
                 },
             },
         });
