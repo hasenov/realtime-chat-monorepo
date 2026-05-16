@@ -13,8 +13,9 @@ export const MessagePreviewSchema = z.object({
     createdAt: z.string(),
 });
 
-export const ChatMessageSchema = MessagePreviewSchema.extend({
+export const MessageFullSchema = MessagePreviewSchema.extend({
     sender: PublicUserSchema,
 });
 
 export type MessagePreview = z.infer<typeof MessagePreviewSchema>;
+export type MessageFull = z.infer<typeof MessageFullSchema>;
