@@ -3,7 +3,6 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
 
 import path from 'path';
 import { CORS_OPTIONS } from './config/cors.config';
@@ -12,15 +11,14 @@ import authRoutes from './routes/auth.routes';
 import conversationRoutes from './routes/conversation.routes';
 import meRoutes from './routes/me.routes';
 import userRoutes from './routes/user.routes';
+import { initSocket } from './socket';
 
 const app = express();
 app.use(cookieParser());
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
-    cors: CORS_OPTIONS,
-});
 
+initSocket(httpServer, CORS_OPTIONS);
 app.use(cors(CORS_OPTIONS));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));
@@ -35,14 +33,6 @@ app.get('/', async (req, res) => {
 });
 
 app.use(errorMiddleware);
-
-io.on('connection', (socket) => {
-    console.log('User connected:', socket.id);
-
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-    });
-});
 
 const PORT = process.env.PORT || 3001;
 

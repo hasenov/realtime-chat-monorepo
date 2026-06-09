@@ -21,12 +21,6 @@ export const messageApi = baseApi.injectEndpoints({
             ) => {
                 return response.data.message;
             },
-            invalidatesTags(_result, _error, arg) {
-                return [
-                    { type: 'Messages', id: arg.id },
-                    { type: 'Conversations' },
-                ];
-            },
         }),
     }),
 });

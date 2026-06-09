@@ -1,7 +1,9 @@
 import { prisma } from '@realtime-chat/database';
+import { MessageFull } from '@realtime-chat/schema';
 import { StatusCodes } from 'http-status-codes';
 import { conversationUserSelect } from '../lib/db-selects/user.select';
 import { AppError } from '../lib/exceptions/AppError';
+import { getIO } from '../socket';
 
 class MessageService {
     async createMessage(
@@ -52,6 +54,24 @@ class MessageService {
 
             return createdMessage;
         });
+
+        // temp types fix
+        const messageForClient: MessageFull = {
+            ...message,
+            createdAt: message.createdAt.toISOString(),
+            sender: {
+                ...message.sender,
+                name: message.sender.name ?? undefined,
+                avatar: message.sender.avatar ?? undefined,
+                bio: message.sender.bio ?? undefined,
+            },
+        };
+
+        const io = getIO();
+        io.to(`conversation:${message.conversationId}`).emit(
+            'message:new',
+            messageForClient
+        );
 
         return message;
     }

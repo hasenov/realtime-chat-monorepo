@@ -15,8 +15,6 @@ export function ConversationListItem({
 }: ConversationListItemProps) {
     const preview = getConversationPreviewInfo(conversation, currentUserId);
 
-    console.log(preview.avatar);
-
     return (
         <NavLink
             to={`/conversations/${conversation.id}`}
