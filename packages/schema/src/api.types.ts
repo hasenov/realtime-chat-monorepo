@@ -2,7 +2,7 @@ import {
     ConversationDetails,
     ConversationListItem,
 } from './conversation.schema';
-import { MessageFull, MessagePreview } from './message.schema';
+import { MessageFull } from './message.schema';
 import { User } from './user.schema';
 
 export interface FieldError {
@@ -62,5 +62,5 @@ export type MessagesResponseData = {
 };
 
 export type MessageResponseData = {
-    message: MessagePreview;
+    message: MessageFull;
 };

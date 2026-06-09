@@ -1,14 +1,14 @@
 import { baseApi } from '@/shared/api/base-api';
 import type {
     ApiDataResponse,
-    MessagePreview,
+    MessageFull,
     MessageResponseData,
     SendMessageInput,
 } from '@realtime-chat/schema';
 
 export const messageApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        sendMessage: build.mutation<MessagePreview, SendMessageInput>({
+        sendMessage: build.mutation<MessageFull, SendMessageInput>({
             query: (body) => ({
                 url: `/conversations/${body.id}/messages`,
                 body: {

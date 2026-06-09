@@ -34,6 +34,11 @@ class MessageService {
                     senderId,
                     content,
                 },
+                include: {
+                    sender: {
+                        select: conversationUserSelect,
+                    },
+                },
             });
 
             await tx.conversation.update({
