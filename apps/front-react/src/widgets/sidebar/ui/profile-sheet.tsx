@@ -29,7 +29,7 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
     return (
         <SheetContent
             side="left"
-            className="w-[350px] p-0 gap-0 border-r sm:max-w-[350px]"
+            className="w-87.5 p-0 gap-0 border-r sm:max-w-87.5"
         >
             <SheetHeader className="bg-primary px-4 py-10 text-primary-foreground">
                 <SheetTitle className="text-primary-foreground text-xl font-medium">
@@ -92,7 +92,7 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                                 <Textarea
                                     value={bio}
                                     onChange={(e) => setBio(e.target.value)}
-                                    className="min-h-[60px] resize-none border-b-2 border-primary border-t-0 border-x-0 rounded-none px-0 shadow-none focus-visible:ring-0 bg-transparent"
+                                    className="min-h-15 resize-none border-b-2 border-primary border-t-0 border-x-0 rounded-none px-0 shadow-none focus-visible:ring-0 bg-transparent"
                                     autoFocus
                                 />
                                 <Button
@@ -106,13 +106,13 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                             </div>
                         ) : (
                             <>
-                                <span className="text-sm text-foreground/90 leading-relaxed flex-1 break-words">
+                                <span className="text-sm text-foreground/90 leading-relaxed flex-1 wrap-break-word">
                                     {bio}
                                 </span>
                                 <Button
                                     size="icon"
                                     variant="ghost"
-                                    className="h-8 w-8 text-muted-foreground mt-[-2px]"
+                                    className="h-8 w-8 text-muted-foreground -mt-0.5"
                                     onClick={() => setIsEditingBio(true)}
                                 >
                                     <Edit2 className="size-4" />
