@@ -52,6 +52,16 @@ export const sessionSlice = createSlice({
                 }
             }
         );
+
+        builder.addMatcher(
+            sessionApi.endpoints.updateProfile.matchFulfilled,
+            (state, { payload }) => {
+                if (state.user) {
+                    if (payload.name) state.user.name = payload.name;
+                    if (payload.bio) state.user.bio = payload.bio;
+                }
+            }
+        );
     },
 });
 

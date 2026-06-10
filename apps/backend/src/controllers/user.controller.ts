@@ -1,4 +1,4 @@
-import { SearchSchema } from '@realtime-chat/schema';
+import { SearchSchema, UpdateProfileSchema } from '@realtime-chat/schema';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { AppError } from '../lib/exceptions/AppError';
@@ -55,6 +55,21 @@ class UserController {
             status: 'success',
             data: {
                 user: userFromDb,
+            },
+        });
+    };
+
+    updateProfile = async (req: Request, res: Response) => {
+        const user = requireUser(req);
+
+        const data = UpdateProfileSchema.parse(req.body);
+
+        const updatedProfile = await userService.updateProfile(user.id, data);
+
+        res.status(StatusCodes.OK).json({
+            status: 'success',
+            data: {
+                user: updatedProfile,
             },
         });
     };

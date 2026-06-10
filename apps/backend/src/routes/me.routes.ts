@@ -13,5 +13,6 @@ router.post(
     uploadAvatarMiddleware.single('avatar'),
     userController.uploadAvatar
 );
+router.patch('/', userController.updateProfile);
 
 export default router;

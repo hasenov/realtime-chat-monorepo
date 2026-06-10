@@ -6,17 +6,25 @@ import { SheetContent, SheetHeader, SheetTitle } from '@/shared/ui/sheet';
 import { Textarea } from '@/shared/ui/textarea';
 import type { User } from '@realtime-chat/schema';
 import { Check, Edit2 } from 'lucide-react';
-import { useState } from 'react';
+import { useProfileSheetForm } from '../model/use-profile-sheet-form';
 
 interface ProfileSheetProps {
     user: User;
 }
 
 export function ProfileSheet({ user }: ProfileSheetProps) {
-    const [isEditingName, setIsEditingName] = useState(false);
-    const [isEditingAbout, setIsEditingAbout] = useState(false);
-    const [name, setName] = useState(user.name || '');
-    const [about, setAbout] = useState('Frontend Developer. Люблю котиков.');
+    const {
+        name,
+        setName,
+        isEditingName,
+        setIsEditingName,
+        handleSaveName,
+        bio,
+        setBio,
+        isEditingBio,
+        setIsEditingBio,
+        handleSaveBio,
+    } = useProfileSheetForm(user);
 
     return (
         <SheetContent
@@ -51,7 +59,7 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                                     size="icon"
                                     variant="ghost"
                                     className="h-8 w-8 text-muted-foreground hover:text-primary"
-                                    onClick={() => setIsEditingName(false)}
+                                    onClick={handleSaveName}
                                 >
                                     <Check className="size-4" />
                                 </Button>
@@ -79,11 +87,11 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                         Сведения
                     </Label>
                     <div className="flex items-start justify-between gap-2">
-                        {isEditingAbout ? (
+                        {isEditingBio ? (
                             <div className="flex w-full items-end gap-2 animate-in fade-in zoom-in-95 duration-200">
                                 <Textarea
-                                    value={about}
-                                    onChange={(e) => setAbout(e.target.value)}
+                                    value={bio}
+                                    onChange={(e) => setBio(e.target.value)}
                                     className="min-h-[60px] resize-none border-b-2 border-primary border-t-0 border-x-0 rounded-none px-0 shadow-none focus-visible:ring-0 bg-transparent"
                                     autoFocus
                                 />
@@ -91,7 +99,7 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                                     size="icon"
                                     variant="ghost"
                                     className="h-8 w-8 text-muted-foreground hover:text-primary mb-1"
-                                    onClick={() => setIsEditingAbout(false)}
+                                    onClick={handleSaveBio}
                                 >
                                     <Check className="size-4" />
                                 </Button>
@@ -99,13 +107,13 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                         ) : (
                             <>
                                 <span className="text-sm text-foreground/90 leading-relaxed flex-1 break-words">
-                                    {about}
+                                    {bio}
                                 </span>
                                 <Button
                                     size="icon"
                                     variant="ghost"
                                     className="h-8 w-8 text-muted-foreground mt-[-2px]"
-                                    onClick={() => setIsEditingAbout(true)}
+                                    onClick={() => setIsEditingBio(true)}
                                 >
                                     <Edit2 className="size-4" />
                                 </Button>

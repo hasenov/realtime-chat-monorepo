@@ -19,5 +19,14 @@ export const PublicUserSchema = UserSchema.pick({
     bio: true,
 });
 
+export const UpdateProfileSchema = UserSchema.pick({
+    bio: true,
+    name: true,
+}).refine((data) => data.name !== undefined || data.bio !== undefined, {
+    message: "At least one of 'name' or 'bio' must be filled.",
+    path: ['root'],
+});
+
 export type User = z.infer<typeof UserSchema>;
 export type PublicUser = z.infer<typeof PublicUserSchema>;
+export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;

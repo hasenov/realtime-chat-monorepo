@@ -62,9 +62,11 @@ export function SettingsSheet({ user }: SettingsSheetProps) {
                         <span className="font-medium text-lg">
                             {user.name || user.username}
                         </span>
-                        <span className="text-sm text-muted-foreground truncate max-w-[200px]">
-                            Frontend Developer
-                        </span>
+                        {user.bio && (
+                            <span className="text-sm text-muted-foreground truncate max-w-[200px]">
+                                {user.bio}
+                            </span>
+                        )}
                     </div>
                 </div>
 

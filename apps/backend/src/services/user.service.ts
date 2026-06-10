@@ -1,5 +1,5 @@
 import { prisma } from '@realtime-chat/database';
-import { SearchInput } from '@realtime-chat/schema';
+import { SearchInput, User } from '@realtime-chat/schema';
 import fs from 'fs';
 import { StatusCodes } from 'http-status-codes';
 import path from 'path';
@@ -91,6 +91,19 @@ class UserService {
                 },
             },
             select: conversationUserSelect,
+        });
+    }
+
+    async updateProfile(userId: string, data: Pick<User, 'name' | 'bio'>) {
+        return await prisma.user.update({
+            where: {
+                id: userId,
+            },
+            data: {
+                bio: data.bio,
+                name: data.name,
+            },
+            select: publicUserSelect,
         });
     }
 }
