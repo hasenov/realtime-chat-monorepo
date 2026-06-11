@@ -69,7 +69,11 @@ export function ChatWindow() {
             />
 
             {messages.length > 0 ? (
-                <MessageList messages={messages} meId={me.id} />
+                <MessageList
+                    messages={messages}
+                    meId={me.id}
+                    conversationId={conversationId}
+                />
             ) : (
                 <MessagesEmptyState />
             )}

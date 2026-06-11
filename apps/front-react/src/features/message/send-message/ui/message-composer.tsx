@@ -8,7 +8,7 @@ interface MessageComposerProps {
 }
 
 export function MessageComposer({ conversationId }: MessageComposerProps) {
-    const { content, setContent, handleSubmit, isLoading, canSend } =
+    const { content, handleTyping, handleSubmit, isLoading, canSend } =
         useMessageComposer(conversationId);
 
     return (
@@ -30,7 +30,7 @@ export function MessageComposer({ conversationId }: MessageComposerProps) {
                     placeholder="Напишите сообщение..."
                     className="min-h-5 bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-primary shadow-none"
                     value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                    onChange={handleTyping}
                     disabled={isLoading}
                 />
                 <Button

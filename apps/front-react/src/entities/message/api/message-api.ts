@@ -60,7 +60,50 @@ export const messageApi = baseApi.injectEndpoints({
                 socketService.socket?.off('message:new', handleNewMessage);
             },
         }),
+        getTypingUsers: build.query<string[], string>({
+            queryFn: () => ({ data: [] }),
+            async onCacheEntryAdded(
+                conversationId,
+                { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+            ) {
+                try {
+                    await cacheDataLoaded;
+
+                    const handleStart = (data: {
+                        conversationId: string;
+                        userId: string;
+                    }) => {
+                        if (data.conversationId === conversationId) {
+                            updateCachedData((draft) => {
+                                if (!draft.includes(data.userId)) {
+                                    draft.push(data.userId);
+                                }
+                            });
+                        }
+                    };
+
+                    const handleStop = (data: {
+                        conversationId: string;
+                        userId: string;
+                    }) => {
+                        if (data.conversationId === conversationId) {
+                            updateCachedData((draft) => {
+                                return draft.filter((id) => id !== data.userId);
+                            });
+                        }
+                    };
+
+                    socketService.socket?.on('typing:start', handleStart);
+                    socketService.socket?.on('typing:stop', handleStop);
+
+                    await cacheEntryRemoved;
+
+                    socketService.socket?.off('typing:start', handleStart);
+                    socketService.socket?.off('typing:stop', handleStop);
+                } catch {}
+            },
+        }),
     }),
 });
 
-export const { useGetMessagesQuery } = messageApi;
+export const { useGetMessagesQuery, useGetTypingUsersQuery } = messageApi;

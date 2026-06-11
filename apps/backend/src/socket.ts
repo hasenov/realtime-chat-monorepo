@@ -7,11 +7,15 @@ import type { DecodedToken } from './types/auth.types';
 
 interface ServerToClientEvents {
     'message:new': (message: MessageFull) => void;
+    'typing:start': (data: { conversationId: string; userId: string }) => void;
+    'typing:stop': (data: { conversationId: string; userId: string }) => void;
 }
 
 interface ClientToServerEvents {
     'conversation:join': (data: { conversationId: string }) => void;
     'conversation:leave': (data: { conversationId: string }) => void;
+    'typing:start': (data: { conversationId: string }) => void;
+    'typing:stop': (data: { conversationId: string }) => void;
 }
 
 interface SocketData {
@@ -79,6 +83,18 @@ export const initSocket = (
 
         socket.on('conversation:leave', ({ conversationId }) => {
             socket.leave(`conversation:${conversationId}`);
+        });
+
+        socket.on('typing:start', ({ conversationId }) => {
+            socket
+                .to(`conversation:${conversationId}`)
+                .emit('typing:start', { conversationId, userId });
+        });
+
+        socket.on('typing:stop', ({ conversationId }) => {
+            socket
+                .to(`conversation:${conversationId}`)
+                .emit('typing:stop', { conversationId, userId });
         });
 
         socket.on('disconnect', () => {
